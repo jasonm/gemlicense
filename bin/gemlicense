@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/gemlicense'
+
+paths = `bundle show --paths`.split
+
+identifiers = paths.map do |path|
+  FilesystemLicenseIdentifier.identify_path(path)
+end
+
+# require 'erubis'
+# class HtmlReport
+#   def initialize(identifiers)
+#     @identifiers = identifiers
+#   end
+# 
+#   def to_html
+#     template = File.open(File.join(File.dirname(__FILE__), "report.html.erb")).read
+#   end
+# end
+
+identifiers.select(&:license_name).each do |identifier|
+  puts identifier.library_name
+  puts "  #{identifier.license_name}"
+  puts "  #{identifier.source}"
+  if identifier.copyright_holders.any?
+    puts "  Copyright holders: #{identifier.copyright_holders.inspect}"
+  end
+  puts
+end
+
+identifiers.reject(&:license_name).each do |identifier|
+  puts identifier.library_name
+  puts "  Unknown or no license:"
+  puts "  #{identifier.source}"
+  if identifier.copyright_holders.any?
+    puts "  Copyright holders: #{identifier.copyright_holders.inspect}"
+  end
+  puts
+end

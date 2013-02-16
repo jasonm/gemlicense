@@ -1,0 +1,5 @@
+watch('lib/gemlicense.rb') do
+  system("ruby lib/gemlicense.rb")
+end
+
+puts "Watchr running."
